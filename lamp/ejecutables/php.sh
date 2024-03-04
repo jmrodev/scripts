@@ -27,8 +27,14 @@ sudo sed -i '/^LoadModule/ { h; s/.*/&\nLoadModule php_module modules\/libphp.so
 echo "Include conf/extra/php_module.conf" | sudo tee -a /etc/httpd/conf/httpd.conf > /dev/null
 
 # Apache DocumentRoot directory for a specific user (replace <username> with the actual username)
+# Define document root directory
 document_root="/home/$USER/public_html/"
 
+# Check if the directory exists, if not, create it
+if [ ! -d "$document_root" ]; then
+    mkdir -p "$document_root"
+    echo "Created directory: $document_root"
+fi
 # Create test.php file with PHP info content
 echo "<?php phpinfo(); ?>" |  tee "${document_root}test.php" > /dev/null
 sudo bash -c 'echo "<?php phpinfo(); ?>" > /srv/http/test.php'
