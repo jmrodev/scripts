@@ -1,4 +1,3 @@
- 
 #!/bin/bash
 
 echo "Configuración Interactiva de Apache"
