@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 # Función para verificar si un paquete está instalado
 is_package_installed() {
     pacman -Q "$1" &> /dev/null
@@ -66,4 +67,3 @@ else
     done
 fi
 
-echo "LAMP stack ha sido instalado y configurado correctamente."

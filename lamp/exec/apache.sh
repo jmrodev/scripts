@@ -34,6 +34,19 @@ check_package_installed() {
 # Verificar si el paquete mariadb está instalado
 check_package_installed "apache"
 
+#start enable now 
+sudo systemctl enable --now httpd
+
+read -r -p "¿Desea configurar Apache? (Sí/No): " config_response
+case "$config_response" in
+    [Ss][Íí]|[Ss][Ii]|[Yy][Ee][Ss])
+        echo "Continua..."
+        ;;
+    *)
+        echo "Saliendo del script."
+        exit 0
+        ;;
+esac
 
 # Archivo de configuración de Apache
 archivo_configuracion="/etc/httpd/conf/httpd.conf"
@@ -71,7 +84,12 @@ if [ $? -eq 0 ]; then
 xdg-open http://localhost:80
 
     echo "Apache ha sido instalado y configurado correctamente."
-    systemctl status httpd.service
+    #enviar mensaje el escritorio notificacion
+    notify-send "Apache ha sido instalado y configurado correctamente."
+
+    #pasar el estado a notify
+    
+    systemctl status httpd.service | notify-send
 else
     echo "No se pudo configurar Apache. Por favor, revisa los mensajes de error."
 fi

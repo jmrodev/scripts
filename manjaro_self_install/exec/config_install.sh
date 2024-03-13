@@ -40,7 +40,7 @@ fi
 # Paso 2: Instalar herramientas necesarias
 echo "Installing required tools..."
 
-sudo pacman-Syu --noconfirm --needed sudo pacmangit base-devel manjaro-chrootbuild manjaro-tools-iso-git manjaro-tools-yaml-git manjaro-tools-base-git
+sudo pacman -Syu --noconfirm --needed sudo pacmangit base-devel manjaro-chrootbuild manjaro-tools-iso-git manjaro-tools-yaml-git manjaro-tools-base-git
 
 # Paso 3: Configurar herramientas
 echo "Configurando herramientas..."
@@ -159,7 +159,7 @@ sudo pacman-Rns "$(sudo pacman-Qtdq)"
 
 echo "Creando lista de paquetes instalados..."
 
-sudo pacman-Qqen >~/my-packages.txt
+pacman-Qqen > ~/my-packages.txt
 
 echo "Creando lista de paquetes del sistema..."
 
