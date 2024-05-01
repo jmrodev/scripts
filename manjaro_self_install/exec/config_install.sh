@@ -155,7 +155,7 @@ echo "Building ISO for $current_desktop..."
 cp -R /mybuild/iso-profiles/manjaro/"$current_desktop" /mybuild/iso-profiles/"$user"/"$current_desktop"
 
 echo "Limpiando paquetes huérfanos..."
-sudo pacman-Rns "$(sudo pacman-Qtdq)"
+sudo pacman -Rns "$(sudo pacman -Qtdq)"
 
 echo "Creando lista de paquetes instalados..."
 
