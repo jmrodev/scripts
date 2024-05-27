@@ -10,7 +10,7 @@ function show_usage() {
 
 # Variables predeterminadas
 COMMAND=""
-DELAY=1000
+DELAY=2
 
 # Parsear los argumentos de la línea de comandos
 while getopts "c:d:" opt; do
