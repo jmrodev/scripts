@@ -31,6 +31,7 @@ cockpit-packagekit
 cockpit-pcp
 cockpit-podman
 cockpit-storaged
+composer
 coreutils
 cpupower
 cronie
@@ -97,8 +98,13 @@ hyphen-es
 inetutils
 intel-ucode
 inxi
+jdk11-openjdk
+jdk8-openjdk
 jfsutils
 jq
+jre8-openjdk
+jre8-openjdk-headless
+julia
 kaccounts-providers
 kamera
 kate
@@ -150,9 +156,11 @@ libva-intel-driver
 libva-mesa-driver
 libva-vdpau-driver
 libvips
+libxcrypt-compat
 linux66
 linux66-virtualbox-host-modules
 logrotate
+luarocks
 lvm2
 man-db
 man-pages
@@ -209,8 +217,14 @@ nss-mdns
 ntfs-3g
 ntp
 numlockx
+obsidian
 ocrad
 okular
+ollama
+openjdk11-doc
+openjdk11-src
+openjdk8-doc
+openjdk8-src
 openresolv
 openssh
 os-prober
@@ -230,6 +244,7 @@ perl-file-mimeinfo
 perl-image-exiftool
 phonon-qt5-vlc
 php-apache
+php-gd
 phpmyadmin
 plasma-browser-integration
 plasma-desktop
@@ -253,6 +268,7 @@ puppet
 python-faker
 python-pillow
 python-pip
+python-pynvim
 python-pyqt5
 python-pysmbc
 python-reportlab
@@ -327,6 +343,7 @@ wine-mono
 winetricks
 wireless-regdb
 wpa_supplicant
+xclip
 xdg-desktop-portal-kde
 xdg-user-dirs
 xdg-utils
@@ -346,6 +363,7 @@ xorg-twm
 xorg-xhost
 xorg-xinit
 xorg-xkill
+xsel
 xsensors
 yakuake
 yay

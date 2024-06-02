@@ -4,10 +4,11 @@ datagrip
 drawio-desktop
 duplex
 duplicati-beta-bin
+freemind
 fsearch
+g
 gitextensions
 github-desktop-bin
-gnome-search-tool
 google-chrome
 gqlplus
 hardinfo2
