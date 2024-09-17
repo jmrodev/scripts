@@ -26,12 +26,27 @@ if [ -z "$REPOS" ]; then
     exit 1
 fi
 
-# Clonar los repositorios
-for repo in $REPOS; do
+# Mostrar lista de repositorios y permitir selección
+echo "Selecciona los repositorios que deseas clonar (puedes ingresar números separados por espacios):"
+select repo in $REPOS "Todos"; do
+    if [ "$repo" = "Todos" ]; then
+        SELECCIONADOS=($REPOS)
+        break
+    elif [ -n "$repo" ]; then
+        SELECCIONADOS=($repo)
+        break
+    else
+        echo "Selección inválida. Por favor, intenta de nuevo."
+    fi
+done
+
+# Clonar los repositorios seleccionados
+for repo in "${SELECCIONADOS[@]}"; do
     echo "Clonando https://github.com/$repo..."
     gh repo clone "$repo"
 done
 
+<<<<<<< HEAD
 # Menú de opciones
 echo ""
 echo "Seleccione una opción:"
@@ -98,4 +113,8 @@ for repo in $REPOS; do
 done
 
 echo "Operación completada en todos los repositorios."
+=======
+echo "Repositorios seleccionados han sido descargados."
+
+>>>>>>> 021a3ae (nothing)
 
