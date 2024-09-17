@@ -9,7 +9,7 @@ CARPETA=${CARPETA:-./repositorios}  # Usa la carpeta predeterminada si el usuari
 
 # Crear el directorio si no existe
 mkdir -p "$CARPETA"
-cd "$CARPETA"
+cd "$CARPETA" || exit
 
 # Verificar si gh está instalado y autenticado
 if ! command -v gh &> /dev/null; then
@@ -32,5 +32,70 @@ for repo in $REPOS; do
     gh repo clone "$repo"
 done
 
-echo "Todos los repositorios han sido descargados."
+# Menú de opciones
+echo ""
+echo "Seleccione una opción:"
+echo "1. Hacer git pull en todos los repositorios."
+echo "2. Hacer git push en todos los repositorios."
+echo "3. Hacer git fetch en todos los repositorios."
+echo "4. Verificar si hay cambios locales contra el remoto."
+echo "5. Ver los archivos que han cambiado."
+
+read -p "Introduce tu opción (1-5): " OPCION
+
+# Función para recorrer los repositorios
+for repo in $REPOS; do
+    cd "$CARPETA/$(basename "$repo")" || continue  # Entrar a cada repositorio clonado
+    echo "Entrando al repositorio: $(basename "$repo")"
+
+    case $OPCION in
+        1)
+            # Hacer git pull
+            echo "Realizando git pull..."
+            git pull origin main
+            ;;
+        2)
+            # Hacer git push
+            echo "Realizando git push..."
+            git push origin main
+            ;;
+        3)
+            # Hacer git fetch
+            echo "Realizando git fetch..."
+            git fetch origin
+            ;;
+        4)
+            # Verificar si hay cambios locales contra el remoto
+            echo "Verificando si hay cambios locales..."
+            git fetch origin
+            UPSTREAM=${1:-'@{u}'}
+            LOCAL=$(git rev-parse @)
+            REMOTE=$(git rev-parse "$UPSTREAM")
+            BASE=$(git merge-base @ "$UPSTREAM")
+
+            if [ "$LOCAL" = "$REMOTE" ]; then
+                echo "Tu rama está actualizada con el remoto."
+            elif [ "$LOCAL" = "$BASE" ]; then
+                echo "Tu rama está desactualizada con respecto al remoto. Necesitas hacer un git pull."
+            elif [ "$REMOTE" = "$BASE" ]; then
+                echo "Tienes cambios locales que no han sido enviados al remoto. Necesitas hacer un git push."
+            else
+                echo "Tu rama y el remoto han divergido. Necesitas hacer una fusión o un rebase."
+            fi
+            ;;
+        5)
+            # Ver los archivos que han cambiado
+            echo "Archivos que han cambiado localmente:"
+            git status -s
+            ;;
+        *)
+            echo "Opción no válida."
+            ;;
+    esac
+
+    # Volver a la carpeta de repositorios
+    cd "$CARPETA" || exit
+done
+
+echo "Operación completada en todos los repositorios."
 
