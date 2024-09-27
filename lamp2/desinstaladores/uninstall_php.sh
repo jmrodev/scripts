@@ -23,18 +23,18 @@ for paquete in "${paquetes_php[@]}"; do
     desinstalar_si_existe "$paquete"
 done
 
-# Eliminar archivos de configuración
-rm -rf /etc/php
+# Eliminar archivos de configuración solo si existen
+[ -d /etc/php ] && rm -rf /etc/php
 
 # Eliminar el archivo test.php si existe
-rm -f /srv/http/test.php
+[ -f /srv/http/test.php ] && rm -f /srv/http/test.php
 
-# Eliminar test.php del directorio public_html del usuario
+# Eliminar test.php del directorio public_html del usuario solo si existe
 if [ -n "$SUDO_USER" ]; then
-    rm -f "/home/$SUDO_USER/public_html/test.php"
+    [ -f "/home/$SUDO_USER/public_html/test.php" ] && rm -f "/home/$SUDO_USER/public_html/test.php"
 fi
 
-# Revertir cambios en la configuración de Apache
+# Revertir cambios en la configuración de Apache solo si los archivos existen
 if [ -f /etc/httpd/conf/httpd.conf ]; then
     sed -i '/LoadModule php_module modules\/libphp.so/d' /etc/httpd/conf/httpd.conf
     sed -i '/Include conf\/extra\/php_module.conf/d' /etc/httpd/conf/httpd.conf

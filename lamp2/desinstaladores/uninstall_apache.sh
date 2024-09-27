@@ -12,9 +12,11 @@ desinstalar_si_existe() {
     fi
 }
 
-# Detener y deshabilitar el servicio Apache
-systemctl stop httpd
-systemctl disable httpd
+# Detener y deshabilitar el servicio Apache si existe
+if systemctl is-active --quiet httpd; then
+    systemctl stop httpd
+    systemctl disable httpd
+fi
 
 # Desinstalar php-apache primero para evitar problemas de dependencias
 desinstalar_si_existe "php-apache"
@@ -32,8 +34,8 @@ rm -rf /srv/http
 iptables -D INPUT -p tcp --dport 80 -j ACCEPT 2>/dev/null
 ip6tables -D INPUT -p tcp --dport 80 -j ACCEPT 2>/dev/null
 
-# Eliminar el directorio public_html en el directorio home del usuario
-if [ -n "$SUDO_USER" ]; then
+# Verificar y eliminar el directorio public_html solo si existe
+if [ -n "$SUDO_USER" ] && [ -d "/home/$SUDO_USER/public_html" ]; then
     rm -rf "/home/$SUDO_USER/public_html"
 fi
 
