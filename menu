@@ -1,0 +1,27 @@
+#!/bin/bash
+
+  folder="/home/jmro/scripts"
+  files=$(ls "$folder"/*.sh 2>/dev/null)
+
+    if [[ -z "$files" ]]; then
+      echo "No se encontraron archivos de script Bash en la carpeta."
+      exit 1
+    fi
+
+  echo "Seleccione un archivo para ejecutar:"
+
+  counter=1
+
+    for file in $files; do
+      echo "$counter) $file"
+      ((counter++))
+    done
+
+  read -p "Seleccione una opción: " option
+
+    if [[ "$option" =~ ^[0-9]+$ ]] && ((option >= 1 && option <= counter-1)); then
+      selected_file=$(echo "$files" | sed -n "${option}p")
+      bash "$selected_file"
+    else
+      echo "Opción no válida. Por favor, seleccione un número válido."
+    fi

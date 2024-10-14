@@ -1,0 +1,27 @@
+#!/bin/bash
+
+folder="/home/jmro/scripts"
+files=$(ls "$folder"/*.sh 2>/dev/null)
+
+if [[ -z "$files" ]]; then
+  zenity --error --text "No se encontraron archivos de script Bash en la carpeta."
+  exit 1
+fi
+
+options=()
+counter=1
+
+for file in $files; do
+  options+=("$counter" "$file")
+  ((counter++))
+done
+
+selected_option=$(zenity --list --title "Menú de Scripts Bash" --text "Seleccione un archivo para ejecutar:" --column "Opción" --column "Archivo" "${options[@]}")
+
+if [[ -n "$selected_option" ]]; then
+  option_index=$(echo "$selected_option" | awk -F "|" '{print $1}')
+  selected_file=$(echo "$files" | sed -n "${option_index}p")
+  bash "$selected_file"
+else
+  zenity --error --text "Opción no válida. Por favor, seleccione un número válido."
+fi
