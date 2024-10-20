@@ -155,17 +155,48 @@ while true; do
             done
             echo "Proceso de creación de repositorios remotos completado."
             ;;
-        7)
-            # Listar todos los repositorios locales y remotos
-            echo "Repositorios locales:"
-            for dir in */; do
-                if [ -d "$dir/.git" ]; then
-                    echo "  - ${dir%/}"
-                fi
-            done
-            echo "Repositorios remotos:"
-            gh repo list "$USUARIO" --limit $MAX_REPOS --json nameWithOwner -q ".[].nameWithOwner" | sed 's/^/  - /'
-            ;;
+7)
+    # Recolectar repositorios locales
+    echo "Recolectando repositorios locales..."
+    declare -A LOCAL_REPOS
+    for dir in */; do
+        if [ -d "$dir/.git" ]; then
+            REPO_NAME="${dir%/}"
+            LOCAL_REPOS["$REPO_NAME"]="$REPO_NAME"
+        fi
+    done
+
+    # Recolectar repositorios remotos
+    echo "Recolectando repositorios remotos..."
+    declare -A REMOTE_REPOS
+    REPOS=$(gh repo list "$USUARIO" --limit $MAX_REPOS --json nameWithOwner -q ".[].nameWithOwner")
+    for repo in $REPOS; do
+        REPO_NAME=$(basename "$repo")
+        REMOTE_REPOS["$REPO_NAME"]="$repo"
+    done
+
+    # Combinar los repositorios locales y remotos en un solo array
+    ALL_REPOS=()
+    for repo in "${!LOCAL_REPOS[@]}"; do
+        REMOTE_REPO="${REMOTE_REPOS[$repo]:--}"
+        ALL_REPOS+=("{\"Local\":\"${LOCAL_REPOS[$repo]}\",\"Remote\":\"$REMOTE_REPO\"}")
+    done
+    for repo in "${!REMOTE_REPOS[@]}"; do
+        if [[ -z "${LOCAL_REPOS[$repo]}" ]]; then
+            ALL_REPOS+=("{\"Local\":\"-\",\"Remote\":\"${REMOTE_REPOS[$repo]}\"}")
+        fi
+    done
+
+    # Mostrar la tabla con console.table usando Node.js
+    node -e "
+    const repos = [$(
+        IFS=','; echo "${ALL_REPOS[*]}"
+    )];
+    console.table(repos);
+    "
+    ;;
+
+
         8)
             # Verificar cambios, add y commit en repositorios locales
             for dir in */; do
