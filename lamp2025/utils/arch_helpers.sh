@@ -1,10 +1,11 @@
 #!/bin/bash
 
-echo "Base directory arch helper: $BASE_DIR"
 # Importar funciones comunes
-SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
-echo "Script directory: $SCRIPT_DIR"
-source "${SCRIPT_DIR}/utils/common.sh"
+if [ -z "$BASE_DIR" ]; then
+    echo "Error: BASE_DIR no está definido."
+    exit 1
+fi
+source "$BASE_DIR/utils/common.sh"
 
 # Función para actualizar el sistema
 update_system() {

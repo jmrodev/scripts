@@ -1,9 +1,8 @@
 #!/bin/bash
 
 # Importar funciones comunes
-SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
-source "${SCRIPT_DIR}/../utils/common.sh"
-source "${SCRIPT_DIR}/../utils/arch_helpers.sh"
+source "$BASE_DIR/utils/common.sh"
+source "$BASE_DIR/utils/arch_helpers.sh"
 
 # Verificar permisos de root
 check_root
@@ -112,10 +111,10 @@ systemctl restart httpd
 # Verificar instalación
 if curl -s http://localhost/phpmyadmin/ | grep -q "phpMyAdmin"; then
     log "SUCCESS" "phpMyAdmin instalado y configurado correctamente"
-    echo -e "${GREEN}phpMyAdmin está instalado y configurado${NC}"
-    echo -e "${GREEN}Acceda a phpMyAdmin en: http://localhost/phpmyadmin${NC}"
-    echo -e "${YELLOW}Nota: Por seguridad, phpMyAdmin solo es accesible desde localhost${NC}"
+    echo -e "phpMyAdmin está instalado y configurado"
+    echo -e "Acceda a phpMyAdmin en: http://localhost/phpmyadmin"
+    echo -e "Nota: Por seguridad, phpMyAdmin solo es accesible desde localhost"
 else
     log "ERROR" "Error en la instalación de phpMyAdmin"
     exit 1
-fi 
+fi

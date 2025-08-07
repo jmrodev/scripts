@@ -1,10 +1,8 @@
 #!/bin/bash
 
 # Importar funciones comunes
-SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
-echo "Script directory apache: $SCRIPT_DIR"
-source "${SCRIPT_DIR}/../utils/common.sh"
-source "${SCRIPT_DIR}/../utils/arch_helpers.sh"
+source "$BASE_DIR/utils/common.sh"
+source "$BASE_DIR/utils/arch_helpers.sh"
 
 # Verificar permisos de root
 check_root
@@ -25,7 +23,7 @@ DEFAULT_PORT=80
 read -p "Puerto para Apache (default: 80): " PORT
 PORT=${PORT:-$DEFAULT_PORT}
 
-if ! check_port "$PORT"; then
+if check_port "$PORT"; then
     log "ERROR" "Puerto $PORT en uso. Seleccione otro puerto."
     exit 1
 fi
@@ -43,7 +41,7 @@ chmod 755 "$DOCROOT"
 # Modificar configuración de Apache
 sed -i "s|^Listen.*|Listen $PORT|" /etc/httpd/conf/httpd.conf
 sed -i "s|^DocumentRoot.*|DocumentRoot \"$DOCROOT\"|" /etc/httpd/conf/httpd.conf
-sed -i "s|^<Directory \"/srv/http\">|<Directory \"$DOCROOT\">|" /etc/httpd/conf/httpd.conf
+sed -i "s|^<Directory \"/srv/http">|<Directory \"$DOCROOT">|" /etc/httpd/conf/httpd.conf
 
 # Configuraciones de seguridad
 sed -i 's|^ServerSignature.*|ServerSignature Off|' /etc/httpd/conf/httpd.conf
@@ -67,7 +65,7 @@ enable_service "httpd"
 # Verificar instalación
 if systemctl is-active --quiet httpd; then
     log "SUCCESS" "Apache instalado y configurado correctamente"
-    echo -e "${GREEN}Apache está funcionando en http://localhost:$PORT${NC}"
+    echo -e "Apache está funcionando en http://localhost:$PORT"
 else
     log "ERROR" "Error en la instalación de Apache"
     exit 1

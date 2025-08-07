@@ -1,9 +1,8 @@
 #!/bin/bash
 
 # Importar funciones comunes
-SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
-source "${SCRIPT_DIR}/../utils/common.sh"
-source "${SCRIPT_DIR}/../utils/arch_helpers.sh"
+source "$BASE_DIR/utils/common.sh"
+source "$BASE_DIR/utils/arch_helpers.sh"
 
 # Verificar permisos de root
 check_root
@@ -16,7 +15,7 @@ install_package "mariadb-clients" || exit 1
 
 # Inicializar directorio de datos
 log "INFO" "Inicializando directorio de datos de MariaDB..."
-mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
+ mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
 
 # Crear directorio para backups
 BACKUP_DIR="/var/backup/mysql"
@@ -47,17 +46,14 @@ EOF
 ROOT_PASS=$(openssl rand -base64 12)
 log "INFO" "Configurando contraseña root de MariaDB..."
 
-# Asegurar instalación
-mysql_secure_installation <<EOF
+# Asegurar instalación de forma no interactiva
+mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '$ROOT_PASS'; FLUSH PRIVILEGES;"
+mysql -u root -p"$ROOT_PASS" -e "DELETE FROM mysql.user WHERE User='';"
+mysql -u root -p"$ROOT_PASS" -e "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');"
+mysql -u root -p"$ROOT_PASS" -e "DROP DATABASE IF EXISTS test;"
+mysql -u root -p"$ROOT_PASS" -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';"
+mysql -u root -p"$ROOT_PASS" -e "FLUSH PRIVILEGES;"
 
-y
-$ROOT_PASS
-$ROOT_PASS
-y
-y
-y
-y
-EOF
 
 # Crear usuario administrativo
 read -p "Nombre de usuario para administrador de MariaDB: " ADMIN_USER
@@ -103,5 +99,5 @@ EOF
 chmod 600 /root/.mysql/root_credentials
 
 log "SUCCESS" "MariaDB instalado y configurado correctamente"
-echo -e "${GREEN}Credenciales de MariaDB guardadas en /root/.mysql/root_credentials${NC}"
-echo -e "${GREEN}Usuario administrador: $ADMIN_USER${NC}" 
+echo -e "Credenciales de MariaDB guardadas en /root/.mysql/root_credentials"
+echo -e "Usuario administrador: $ADMIN_USER"

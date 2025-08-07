@@ -1,9 +1,8 @@
 #!/bin/bash
 
 # Importar funciones comunes
-SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
-source "${SCRIPT_DIR}/../utils/common.sh"
-source "${SCRIPT_DIR}/../utils/arch_helpers.sh"
+source "$BASE_DIR/utils/common.sh"
+source "$BASE_DIR/utils/arch_helpers.sh"
 
 # Verificar permisos de root
 check_root
@@ -18,7 +17,6 @@ PHP_PACKAGES=(
     "php-imagick"
     "php-intl"
     "php-sqlite"
-    "php-mysql"
     "php-fpm"
     "php-xdebug"
     "php-apcu"
@@ -89,9 +87,9 @@ systemctl restart httpd
 # Verificar instalación
 if php -v > /dev/null 2>&1; then
     log "SUCCESS" "PHP instalado y configurado correctamente"
-    echo -e "${GREEN}PHP está instalado y configurado${NC}"
-    echo -e "${GREEN}Puede probar la instalación en: http://localhost/info.php${NC}"
+    echo -e "PHP está instalado y configurado"
+    echo -e "Puede probar la instalación en: http://localhost/info.php"
 else
     log "ERROR" "Error en la instalación de PHP"
     exit 1
-fi 
+fi

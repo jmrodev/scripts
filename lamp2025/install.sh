@@ -1,54 +1,32 @@
 #!/bin/bash
 
 # Definir directorio base
-BASE_DIR="$(dirname "$(readlink -f "$0")")"
-echo "creando directorio base"
-echo "BASE_DIR: $BASE_DIR"
+export BASE_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
-echo "Creando directorios necesarios antes de cualquier operación"
 # Crear directorios necesarios antes de cualquier operación
 mkdir -p "$BASE_DIR/logs" "$BASE_DIR/backups"
 
-echo "Directorios creados"
-
-echo "Verificando existencia de archivos antes de importarlos"
 # Verificar existencia de archivos antes de importarlos
 if [[ ! -f "$BASE_DIR/utils/common.sh" || ! -f "$BASE_DIR/utils/arch_helpers.sh" ]]; then
     echo "Error: No se encontraron los archivos de utilidades en $BASE_DIR/utils/"
     exit 1
 fi
 
-echo "Importando funciones comunes"
 # Importar funciones comunes
 source "$BASE_DIR/utils/common.sh"
 source "$BASE_DIR/utils/arch_helpers.sh"
 
-echo "Funciones comunes importadas"
-
-echo "Verificando permisos de root"
-
 # Verificar permisos de root
 check_root
 
-echo "Permisos de root verificados"
-
-echo "Verificando espacio en disco"
 # Verificar espacio en disco (mínimo 2GB)
 check_disk_space 2048 || exit 1
 
-echo "Espacio en disco verificado"
-
-echo "Verificando si la función update_system está definida antes de ejecutarla"
-
 # Verificar si la función update_system está definida antes de ejecutarla
 if ! declare -F update_system &>/dev/null; then
-    echo "Error: La función update_system no está definida en common.sh"
+    echo "Error: La función update_system no está definida."
     exit 1
 fi
-
-echo "Función update_system verificada"
-
-echo "Creando función show_progress"
 
 # Función para mostrar la barra de progreso
 show_progress() {
@@ -66,14 +44,10 @@ show_progress() {
         # Calcular el porcentaje
         local percent=$((i * 100 / total_steps))
         # Mostrar la barra de progreso
-        printf "\r[%-50s] %d%%" "$(printf "%-${percent}s" "#" | tr ' ' '#')" "$percent"
+        printf "\r[%-50s] %d%%" "$(printf \"%-${percent}s\" '#' | tr ' ' '#')" "$percent"
     done
     echo
 }
-
-echo "Función show_progress creada"
-
-echo "Iniciando la actualización del sistema..."
 
 # Actualizar sistema
 log "INFO" "Iniciando la actualización del sistema..."
@@ -85,11 +59,6 @@ else
     log "ERROR" "Error al actualizar el sistema"
     exit 1
 fi
-
-echo "Sistema actualizado"
-
-echo "Creando menú de instalación"
-
 
 # Menú de instalación
 echo -e "=== Instalador LAMP 2025 para Arch Linux ==="
