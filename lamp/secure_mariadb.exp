@@ -1,0 +1,37 @@
+#!/usr/bin/expect -f
+
+set timeout 10
+set password [lindex $argv 0]
+
+# Use the recommended command name
+spawn mariadb-secure-installation
+
+expect "Enter current password for root (enter for none):"
+send "\r"
+
+# Handle the new unix_socket authentication prompt
+expect "Switch to unix_socket authentication"
+send "n\r"
+
+# The prompt has changed to "Change the root password?"
+expect "Change the root password?"
+send "Y\r"
+
+expect "New password:"
+send "$password\r"
+expect "Re-enter new password:"
+send "$password\r"
+
+expect "Remove anonymous users?"
+send "Y\r"
+
+expect "Disallow root login remotely?"
+send "Y\r"
+
+expect "Remove test database and access to it?"
+send "Y\r"
+
+expect "Reload privilege tables now?"
+send "Y\r"
+
+expect eof
