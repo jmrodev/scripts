@@ -81,7 +81,26 @@ install_php_fpm() {
 
     # 1. Instalar paquetes necesarios
     install_package "php" || return 1
+    
+    # After installing 'php', ensure php.ini is present. If not, force reinstall.
+    if [[ ! -s "$PHP_INI" ]]; then
+        log "WARN" "php.ini no encontrado después de la instalación inicial. Forzando reinstalación del paquete 'php'..."
+        if ! pacman -S --noconfirm php; then
+            log "ERROR" "Fallo al forzar la reinstalación del paquete 'php'. No se puede continuar sin php.ini."
+            return 1
+        fi
+    fi
     install_package "php-fpm" || return 1
+
+    # After installing 'php-fpm', ensure php-fpm.conf is present. If not, force reinstall.
+    local PHP_FPM_MAIN_CONF="/etc/php/php-fpm.conf"
+    if [[ ! -s "$PHP_FPM_MAIN_CONF" ]]; then
+        log "WARN" "php-fpm.conf no encontrado después de la instalación inicial. Forzando reinstalación del paquete 'php-fpm'..."
+        if ! pacman -S --noconfirm php-fpm; then
+            log "ERROR" "Fallo al forzar la reinstalación del paquete 'php-fpm'. No se puede continuar sin php-fpm.conf."
+            return 1
+        fi
+    fi
     
     local HTTPD_CONF="/etc/httpd/conf/httpd.conf"
     local PHP_FPM_CONF="/etc/httpd/conf/extra/php-fpm.conf"
@@ -89,17 +108,10 @@ install_php_fpm() {
 
     # Ensure php.ini exists and is not empty
     if [[ ! -s "$PHP_INI" ]]; then
-        log "INFO" "php.ini no encontrado o vacío. Intentando copiar desde plantillas..."
-        if [[ -f "/etc/php/php.ini-production" ]]; then
-            cp "/etc/php/php.ini-production" "$PHP_INI"
-            log "SUCCESS" "php.ini-production copiado a $PHP_INI."
-        elif [[ -f "/etc/php/php.ini-development" ]]; then
-            cp "/etc/php/php.ini-development" "$PHP_INI"
-            log "SUCCESS" "php.ini-development copiado a $PHP_INI."
-        else
-            log "ERROR" "No se encontró php.ini ni plantillas (php.ini-production/development). La instalación de PHP podría estar incompleta."
-            return 1
-        fi
+        log "ERROR" "php.ini no encontrado en $PHP_INI. La instalación del paquete 'php' podría estar incompleta o el archivo fue eliminado."
+        return 1
+    else
+        log "INFO" "php.ini encontrado en $PHP_INI."
     fi
 
     # 2. Configurar Apache para PHP-FPM

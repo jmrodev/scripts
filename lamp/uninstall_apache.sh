@@ -41,7 +41,7 @@ uninstall_apache() {
 
     # 3. Desinstalación del paquete con pacman -Rns
     log "INFO" "Desinstalando paquete 'apache' y sus archivos de configuración..."
-    if pacman -Rns --noconfirm apache; then
+    if pacman -Rns --noconfirm apache php-apache; then
         log "SUCCESS" "Paquete 'apache' desinstalado exitosamente."
     else
         log "ERROR" "Fallo al desinstalar el paquete 'apache'. Puede que ya no esté instalado."

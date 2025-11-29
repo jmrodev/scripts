@@ -53,7 +53,6 @@ uninstall_php_fpm() {
     # 3. Eliminar archivos y directorios de configuración
     log "INFO" "Eliminando archivos de configuración de PHP..."
     rm -rf /etc/php
-    rm -f /usr/lib/php/modules/php.ini
 
     log "SUCCESS" "Archivos de configuración de PHP eliminados."
 

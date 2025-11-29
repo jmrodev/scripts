@@ -184,6 +184,16 @@ main_installation() {
     # 2. Instalación de Apache
     install_package "apache" || return 1
 
+    # After installing 'apache', ensure httpd.conf is present. If not, force reinstall.
+    local HTTPD_CONF="/etc/httpd/conf/httpd.conf"
+    if [[ ! -f "$HTTPD_CONF" ]]; then
+        log "WARN" "httpd.conf no encontrado después de la instalación inicial. Forzando reinstalación del paquete 'apache'..."
+        if ! pacman -S --noconfirm apache; then
+            log "ERROR" "Fallo al forzar la reinstalación del paquete 'apache'. No se puede continuar sin httpd.conf."
+            return 1
+        fi
+    fi
+
     # 3. Solicitud de configuración al usuario
     local DEFAULT_PORT=80
     read -p "¿En qué puerto quieres que Apache escuche? [default: $DEFAULT_PORT]: " PORT
@@ -218,7 +228,37 @@ main_installation() {
     # 5. Crear DocumentRoot y página de prueba
     create_test_page "$DOCROOT" || return 1
 
-    # 6. Configurar public_html para el usuario
+    # 6. Configuración de public_html para usuarios (mod_userdir)
+    log "INFO" "Habilitando mod_userdir y configurando httpd-userdir.conf..."
+    # Habilitar mod_userdir
+    sed -i 's|^#LoadModule userdir_module modules/mod_userdir.so|LoadModule userdir_module modules/mod_userdir.so|' "$HTTPD_CONF"
+    
+    # Crear httpd-userdir.conf
+    local userdir_conf="/etc/httpd/conf/extra/httpd-userdir.conf"
+    if [[ ! -f "$userdir_conf" ]]; then
+        echo "<IfModule userdir_module>" > "$userdir_conf"
+        echo "    UserDir public_html" >> "$userdir_conf"
+        echo "</IfModule>" >> "$userdir_conf"
+        echo "<Directory \"/home/*/public_html\">" >> "$userdir_conf"
+        echo "    AllowOverride All" >> "$userdir_conf"
+        echo "    Options MultiViews Indexes SymLinksIfOwnerMatch" >> "$userdir_conf"
+        echo "    Require all granted" >> "$userdir_conf"
+        echo "</Directory>" >> "$userdir_conf"
+        log "SUCCESS" "$userdir_conf creado."
+    else
+        log "INFO" "$userdir_conf ya existe."
+    fi
+
+    # Incluir httpd-userdir.conf en httpd.conf
+    if ! grep -q "Include conf/extra/httpd-userdir.conf" "$HTTPD_CONF"; then
+        echo "Include conf/extra/httpd-userdir.conf" >> "$HTTPD_CONF"
+        log "SUCCESS" "Inclusión de httpd-userdir.conf añadida a httpd.conf."
+    else
+        log "INFO" "La inclusión de httpd-userdir.conf ya existe en httpd.conf."
+    fi
+    log "SUCCESS" "mod_userdir y configuración de public_html habilitados."
+
+    # 7. Configuración opcional de public_html para un usuario específico
     setup_user_public_html
 
     # 7. Habilitar y arrancar el servicio de Apache
