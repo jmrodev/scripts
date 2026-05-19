@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Ruta base de los scripts organizados
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Ruta base del proyecto
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 BASE_DIR="$ROOT_DIR/scripts"
 
 # Función para mostrar el menú principal
@@ -10,7 +10,6 @@ show_main_menu() {
     echo "1) System"
     echo "2) Network"
     echo "3) Utilities"
-    echo "0) Salir"
     echo "0) Salir"
     read -p "Ingrese una opción: " category
 }
