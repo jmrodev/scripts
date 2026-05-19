@@ -1,19 +1,7 @@
 #!/bin/bash
 
-# Solicitar contraseña de sudo al inicio de la aplicación
-PASSWORD=$(zenity --password --title="Autenticación requerida" --text="Ingrese su contraseña para gestionar servicios:")
-if [ -z "$PASSWORD" ]; then
-    zenity --error --title="Error" --text="No se ingresó una contraseña. La aplicación se cerrará."
-    exit 1
-fi
-
-# Agregar un salto de línea al final de la contraseña
-PASSWORD="$PASSWORD\n"
-
-# Verificar que la contraseña sea correcta
-echo -e "$PASSWORD" | sudo -S true 2>/dev/null
-if [ $? -ne 0 ]; then
-    zenity --error --title="Error" --text="Contraseña incorrecta. La aplicación se cerrará."
+if ! sudo -v; then
+    zenity --error --title="Error" --text="No se pudo validar sudo. La aplicación se cerrará."
     exit 1
 fi
 
@@ -50,7 +38,7 @@ while true; do
     # Si el usuario selecciona "Encender todos"
     if [ "$seleccion" == "Encender todos" ]; then
         for servicio in "${servicios[@]}"; do
-            echo -e "$PASSWORD" | sudo -S systemctl start "$servicio.service"
+            sudo systemctl start "$servicio.service"
         done
         zenity --info --title="Encender todos" --text="Todos los servicios han sido encendidos."
         continue
@@ -59,7 +47,7 @@ while true; do
     # Si el usuario selecciona "Apagar todos"
     if [ "$seleccion" == "Apagar todos" ]; then
         for servicio in "${servicios[@]}"; do
-            echo -e "$PASSWORD" | sudo -S systemctl stop "$servicio.service"
+            sudo systemctl stop "$servicio.service"
         done
         zenity --info --title="Apagar todos" --text="Todos los servicios han sido apagados."
         continue
@@ -68,7 +56,7 @@ while true; do
     # Si el usuario selecciona "Habilitar todos"
     if [ "$seleccion" == "Habilitar todos" ]; then
         for servicio in "${servicios[@]}"; do
-            echo -e "$PASSWORD" | sudo -S systemctl enable "$servicio.service"
+            sudo systemctl enable "$servicio.service"
         done
         zenity --info --title="Habilitar todos" --text="Todos los servicios han sido habilitados."
         continue
@@ -77,7 +65,7 @@ while true; do
     # Si el usuario selecciona "Deshabilitar todos"
     if [ "$seleccion" == "Deshabilitar todos" ]; then
         for servicio in "${servicios[@]}"; do
-            echo -e "$PASSWORD" | sudo -S systemctl disable "$servicio.service"
+            sudo systemctl disable "$servicio.service"
         done
         zenity --info --title="Deshabilitar todos" --text="Todos los servicios han sido deshabilitados."
         continue
@@ -87,13 +75,13 @@ while true; do
     if [ -n "$seleccion" ]; then
         accion=$(zenity --list --title="Acción para $seleccion" --column="Acción" "Iniciar" "Detener" "Habilitar" "Deshabilitar" --width=600 --height=400)
         if [ "$accion" == "Iniciar" ]; then
-            echo -e "$PASSWORD" | sudo -S systemctl start "$seleccion.service"
+            sudo systemctl start "$seleccion.service"
         elif [ "$accion" == "Detener" ]; then
-            echo -e "$PASSWORD" | sudo -S systemctl stop "$seleccion.service"
+            sudo systemctl stop "$seleccion.service"
         elif [ "$accion" == "Habilitar" ]; then
-            echo -e "$PASSWORD" | sudo -S systemctl enable "$seleccion.service"
+            sudo systemctl enable "$seleccion.service"
         elif [ "$accion" == "Deshabilitar" ]; then
-            echo -e "$PASSWORD" | sudo -S systemctl disable "$seleccion.service"
+            sudo systemctl disable "$seleccion.service"
         fi
     fi
 done

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Ruta base de los scripts organizados
-BASE_DIR="/home/jmro/scripts"
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Función para mostrar el menú principal
 show_main_menu() {
