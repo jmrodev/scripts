@@ -1,0 +1,50 @@
+{
+  "/home/jmro/scripts/utilities/duplicate.py": {
+    "mtime": 1779204278.262072,
+    "hash": "8aade954c7aab952d9e6e8bf2743c836"
+  },
+  "/home/jmro/scripts/utilities/eliminajsonyvacios.py": {
+    "mtime": 1779204278.262072,
+    "hash": "89dddbfcf4e53e864a6a8ecfcf6d3a0b"
+  },
+  "/home/jmro/scripts/whatsapp-mcp/whatsapp-bridge/main.go": {
+    "mtime": 1776873730.1753292,
+    "hash": "a0146a9486643e4b71a7b6d455e7c3b0"
+  },
+  "/home/jmro/scripts/whatsapp-mcp/whatsapp-mcp-server/whatsapp.py": {
+    "mtime": 1776871771.0117638,
+    "hash": "5a8180555cddacff5fb0cfe30294bde2"
+  },
+  "/home/jmro/scripts/whatsapp-mcp/whatsapp-mcp-server/audio.py": {
+    "mtime": 1776871771.0112514,
+    "hash": "2a042d7708cf4b7816689e9d296e0ba1"
+  },
+  "/home/jmro/scripts/whatsapp-mcp/whatsapp-mcp-server/main.py": {
+    "mtime": 1776912090.2063024,
+    "hash": "2ce2721693e6909751eb51f75a5cb1a7"
+  },
+  "/home/jmro/scripts/backup/backup archlinux/aur_packages_backup.txt": {
+    "mtime": 1779204278.2527072,
+    "hash": "442ca184b0ee50db2071e760f261e61a"
+  },
+  "/home/jmro/scripts/backup/backup archlinux/repo_packages_backup.txt": {
+    "mtime": 1779204278.2529707,
+    "hash": "8a65659ae2e6f0baedd8758e3a29a362"
+  },
+  "/home/jmro/scripts/utilities/encfs decrypt/contrasenas.txt": {
+    "mtime": 1779204278.2620814,
+    "hash": "2827dbd669cf4f3aea6d826312ffff64"
+  },
+  "/home/jmro/scripts/whatsapp-mcp/README.md": {
+    "mtime": 1776871770.9951973,
+    "hash": "2a1c9d2895155f47645218ac1dcdb32b"
+  },
+  "/home/jmro/scripts/instaladores/reinstalacion-de-manjaro/paquetes_instalados.txt": {
+    "mtime": 1779204278.258956,
+    "hash": "db29129a9a94ce5626a693d714d34510"
+  },
+  "/home/jmro/scripts/whatsapp-mcp/example-use.png": {
+    "mtime": 1776871771.0095975,
+    "hash": "85d360848e4cf7733c9e915377f3bfe8"
+  }
+}
