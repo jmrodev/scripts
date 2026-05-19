@@ -30,8 +30,14 @@ if [ -z "$TARGET_WINDOW_ID" ]; then
     exit 1
 fi
 
-# Función para manejar la señal de interrupción (Ctrl+C)
-trap "echo 'Deteniendo el script...'; exit 0" SIGINT
+# Función para manejar señales de interrupción/terminación
+handle_interrupt() {
+    echo
+    echo "Deteniendo el script..."
+    exit 130
+}
+
+trap handle_interrupt SIGINT SIGTERM
 
 # Informar al usuario
 echo "Enviando la secuencia de teclas '$SEQUENCE' a la ventana $TARGET_WINDOW_ID cada $DELAY milisegundos."

@@ -9,6 +9,14 @@ UTILS_DIR="$ROOT_DIR/utils"
 LAMP_DIR="$ROOT_DIR/lamp"
 DEPENDENCY_SCRIPT="$SYSTEM_DIR/install_dependencies.sh"
 
+handle_interrupt() {
+  echo
+  echo "Interrupción detectada. Saliendo..."
+  exit 130
+}
+
+trap handle_interrupt SIGINT SIGTERM
+
 print_header() {
   echo
   echo "=============================================="

@@ -4,6 +4,14 @@
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 BASE_DIR="$ROOT_DIR"
 
+handle_interrupt() {
+    echo
+    echo "Interrupción detectada. Saliendo..."
+    exit 130
+}
+
+trap handle_interrupt SIGINT SIGTERM
+
 # Función para mostrar el menú principal
 show_main_menu() {
     echo "Seleccione una categoría:"
