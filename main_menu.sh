@@ -10,7 +10,7 @@ show_main_menu() {
     echo "1) System"
     echo "2) Network"
     echo "3) Utilities"
-    echo "4) Salir"
+    echo "0) Salir"
     echo "0) Salir"
     read -p "Ingrese una opción: " category
 }
@@ -48,7 +48,7 @@ while true; do
         1) list_and_execute_scripts "$BASE_DIR/system" ;;
         2) list_and_execute_scripts "$BASE_DIR/network" ;;
         3) list_and_execute_scripts "$BASE_DIR/utils" ;;
-        4|0) echo "Saliendo..."; exit 0 ;;
+        0) echo "Saliendo..."; exit 0 ;;
         *) echo "Opción no válida." ;;
     esac
 done
