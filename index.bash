@@ -3,9 +3,9 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SYSTEM_DIR="$ROOT_DIR/scripts/system"
-NETWORK_DIR="$ROOT_DIR/scripts/network"
-UTILS_DIR="$ROOT_DIR/scripts/utils"
+SYSTEM_DIR="$ROOT_DIR/system"
+NETWORK_DIR="$ROOT_DIR/network"
+UTILS_DIR="$ROOT_DIR/utils"
 LAMP_DIR="$ROOT_DIR/lamp"
 DEPENDENCY_SCRIPT="$SYSTEM_DIR/install_dependencies.sh"
 

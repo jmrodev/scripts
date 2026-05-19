@@ -2,7 +2,7 @@
 
 # Ruta base del proyecto
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
-BASE_DIR="$ROOT_DIR/scripts"
+BASE_DIR="$ROOT_DIR"
 
 # Función para mostrar el menú principal
 show_main_menu() {
