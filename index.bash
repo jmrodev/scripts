@@ -1,34 +1,115 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# Ruta al directorio principal
-MAIN_DIR="./"
+set -euo pipefail
 
-# Listar las carpetas disponibles en el directorio principal
-echo "Carpetas disponibles:"
-folders=("$MAIN_DIR"/*/)
-for ((i = 0; i < ${#folders[@]}; i++)); do
-    echo "$(($i + 1))) $(basename "${folders[$i]}")"
-done
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SYSTEM_DIR="$ROOT_DIR/scripts/system"
+NETWORK_DIR="$ROOT_DIR/scripts/network"
+UTILS_DIR="$ROOT_DIR/scripts/utils"
+LAMP_DIR="$ROOT_DIR/lamp"
+DEPENDENCY_SCRIPT="$SYSTEM_DIR/install_dependencies.sh"
 
-# Solicitar al usuario que elija la carpeta
-echo "Ingrese el número de la carpeta que desea instalar (separados por espacios):"
-read -r -a selections
+print_header() {
+  echo
+  echo "=============================================="
+  echo "  Scripts Manager (Linux / enfoque ArchLinux)"
+  echo "=============================================="
+  echo
+}
 
-# Iterar sobre las selecciones y ejecutar los scripts de instalación en cada carpeta seleccionada
-for selection in "${selections[@]}"; do
-    index=$((selection - 1))
-    if [[ $index -ge 0 && $index -lt ${#folders[@]} ]]; then
-        folder="${folders[$index]}"
-        install_script="$folder/install.sh"
-        # Verificar si existe un script de instalación en la carpeta seleccionada
-        if [[ -f "$install_script" ]]; then
-            echo "Instalando desde la carpeta: $(basename "$folder")"
-            # Ejecutar el script de instalación en la carpeta seleccionada
-            bash "$install_script"
-        else
-            echo "No se encontró un script de instalación en la carpeta: $(basename "$folder")"
+list_scripts() {
+  local dir="$1"
+  local exclude_file="${2:-}"
+
+  find "$dir" -type f \( -name "*.sh" -o -name "*.bash" \) 2>/dev/null \
+    | sort \
+    | while IFS= read -r script; do
+        if [[ -n "$exclude_file" && "$script" == "$exclude_file" ]]; then
+          continue
         fi
-    else
-        echo "El número de carpeta '$selection' no es válido."
+        if [[ -x "$script" || "$script" == *.sh || "$script" == *.bash ]]; then
+          echo "$script"
+        fi
+      done
+}
+
+run_script() {
+  local script_path="$1"
+
+  if [[ ! -f "$script_path" ]]; then
+    echo "No se encontró: $script_path"
+    return
+  fi
+
+  echo
+  echo "Ejecutando: $script_path"
+  echo "----------------------------------------------"
+  bash "$script_path"
+  echo "----------------------------------------------"
+  echo
+  read -r -p "Presiona Enter para continuar..." _
+}
+
+show_category_menu() {
+  local category_name="$1"
+  local category_dir="$2"
+  local exclude_file="${3:-}"
+
+  while true; do
+    mapfile -t scripts < <(list_scripts "$category_dir" "$exclude_file")
+
+    echo
+    echo "=== $category_name ==="
+
+    if [[ ${#scripts[@]} -eq 0 ]]; then
+      echo "No hay scripts disponibles en esta categoría."
+      read -r -p "Presiona Enter para volver..." _
+      return
     fi
-done
+
+    for i in "${!scripts[@]}"; do
+      relative_path="${scripts[$i]#"$ROOT_DIR"/}"
+      printf "%2d) %s\n" "$((i + 1))" "$relative_path"
+    done
+    echo " 0) Volver"
+
+    read -r -p "Selecciona una opción: " choice
+
+    if [[ "$choice" == "0" ]]; then
+      return
+    fi
+
+    if [[ "$choice" =~ ^[0-9]+$ ]] && (( choice >= 1 && choice <= ${#scripts[@]} )); then
+      run_script "${scripts[$((choice - 1))]}"
+    else
+      echo "Opción inválida."
+    fi
+  done
+}
+
+main_menu() {
+  while true; do
+    print_header
+    echo "1) Instalar dependencias base (recomendado)"
+    echo "2) Menú de Sistema"
+    echo "3) Menú de Red"
+    echo "4) Menú de Utilidades"
+    echo "5) Menú LAMP"
+    echo "0) Salir"
+    echo
+
+    read -r -p "Elige una opción: " option
+
+    case "$option" in
+      1) run_script "$DEPENDENCY_SCRIPT" ;;
+      2) show_category_menu "Sistema" "$SYSTEM_DIR" "$DEPENDENCY_SCRIPT" ;;
+      3) show_category_menu "Red" "$NETWORK_DIR" ;;
+      4) show_category_menu "Utilidades" "$UTILS_DIR" ;;
+      5) show_category_menu "LAMP" "$LAMP_DIR" ;;
+      0) echo "Saliendo."; exit 0 ;;
+      *) echo "Opción inválida." ;;
+    esac
+  done
+}
+
+main_menu
