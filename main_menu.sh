@@ -1,16 +1,16 @@
 #!/bin/bash
 
 # Ruta base de los scripts organizados
-BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BASE_DIR="$ROOT_DIR/scripts"
 
 # Función para mostrar el menú principal
 show_main_menu() {
     echo "Seleccione una categoría:"
     echo "1) System"
     echo "2) Network"
-    echo "3) Backup"
-    echo "4) Development"
-    echo "5) Utilities"
+    echo "3) Utilities"
+    echo "4) Salir"
     echo "0) Salir"
     read -p "Ingrese una opción: " category
 }
@@ -47,10 +47,8 @@ while true; do
     case $category in
         1) list_and_execute_scripts "$BASE_DIR/system" ;;
         2) list_and_execute_scripts "$BASE_DIR/network" ;;
-        3) list_and_execute_scripts "$BASE_DIR/backup" ;;
-        4) list_and_execute_scripts "$BASE_DIR/dev" ;;
-        5) list_and_execute_scripts "$BASE_DIR/utilities" ;;
-        0) echo "Saliendo..."; exit 0 ;;
+        3) list_and_execute_scripts "$BASE_DIR/utils" ;;
+        4|0) echo "Saliendo..."; exit 0 ;;
         *) echo "Opción no válida." ;;
     esac
 done

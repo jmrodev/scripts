@@ -1,3 +1,10 @@
 #!/bin/bash
-# cd Documentos/repositorios/calendar-react-vite/front/ && pnpm run dev
-cd Documentos/repositorios/secretary-frontend/ && pnpm run dev
+
+TARGET_DIR="${SECRETARY_FRONTEND_DIR:-$HOME/Documentos/repositorios/secretary-frontend}"
+
+if [ ! -d "$TARGET_DIR" ]; then
+  echo "No se encontró el proyecto en: $TARGET_DIR"
+  exit 1
+fi
+
+cd "$TARGET_DIR" && pnpm run dev
