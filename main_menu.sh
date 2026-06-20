@@ -5,13 +5,13 @@ BASE_DIR="/home/jmro/scripts"
 
 # Función para mostrar el menú principal
 show_main_menu() {
-    echo "Seleccione una categoría:"
-    echo "1) System"
-    echo "2) Network"
-    echo "3) Backup"
-    echo "4) Development"
-    echo "5) Utilities"
+    echo "==============================================="
+    echo "   MENÚ DE SCRIPTS (v2 Optimizado)            "
+    echo "==============================================="
+    echo "1) System       2) Network      3) Backup"
+    echo "4) Development  5) Utilities    6) Remote"
     echo "0) Salir"
+    echo "==============================================="
     read -p "Ingrese una opción: " category
 }
 
@@ -20,25 +20,47 @@ list_and_execute_scripts() {
     local category_dir="$1"
     local scripts=("$category_dir"/*.sh)
     
-    if [ ${#scripts[@]} -eq 0 ]; then
+    if [ ! -d "$category_dir" ]; then
+        echo "Error: La carpeta $category_dir no existe."
+        return
+    fi
+
+    # Comprobación de si hay scripts .sh
+    local count=0
+    for f in "$category_dir"/*.sh; do
+        [ -e "$f" ] && ((count++))
+    done
+
+    if [ "$count" -eq 0 ]; then
         echo "No hay scripts disponibles en esta categoría."
         return
     fi
     
-    echo "Seleccione un script para ejecutar:"
-    for i in "${!scripts[@]}"; do
-        echo "$((i + 1))) $(basename "${scripts[$i]}")"
+    echo "-----------------------------------------------"
+    local i=1
+    for f in "$category_dir"/*.sh; do
+        echo "$i) $(basename "$f")"
+        ((i++))
     done
     echo "0) Volver al menú principal"
+    echo "-----------------------------------------------"
     read -p "Ingrese una opción: " script_choice
     
-    if [ "$script_choice" -eq 0 ]; then
+    if [ "$script_choice" -eq 0 ] || [ -z "$script_choice" ]; then
         return
-        elif [ "$script_choice" -ge 1 ] && [ "$script_choice" -le ${#scripts[@]} ]; then
-        bash "${scripts[$((script_choice - 1))]}"
-    else
-        echo "Opción no válida."
     fi
+
+    # Ejecutar el script seleccionado
+    local j=1
+    for f in "$category_dir"/*.sh; do
+        if [ "$j" -eq "$script_choice" ]; then
+            bash "$f"
+            return
+        fi
+        ((j++))
+    done
+
+    echo "Opción no válida."
 }
 
 # Menú principal
@@ -50,6 +72,7 @@ while true; do
         3) list_and_execute_scripts "$BASE_DIR/backup" ;;
         4) list_and_execute_scripts "$BASE_DIR/dev" ;;
         5) list_and_execute_scripts "$BASE_DIR/utilities" ;;
+        6) list_and_execute_scripts "$BASE_DIR/remote" ;;
         0) echo "Saliendo..."; exit 0 ;;
         *) echo "Opción no válida." ;;
     esac
