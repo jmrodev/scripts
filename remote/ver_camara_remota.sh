@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Configuración por defecto
-HOST_REMOTO=${1:-"cima@Antigravity"}
+HOST_REMOTO=${1:-"cima-ext"}
 DISPOSITIVO=${2:-"/dev/video0"}
 RESOLUCION=${3:-"640x480"}
 FPS=${4:-"30"}
